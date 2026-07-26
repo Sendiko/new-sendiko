@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,15 +12,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid admin passcode' }, { status: 401 });
     }
 
-    const response = NextResponse.json({ message: 'Login successful' });
-
-    // Explicitly attach Set-Cookie to NextResponse
-    response.cookies.set('admin_session', 'authenticated', {
+    const cookieStore = await cookies();
+    cookieStore.set('admin_session', 'authenticated', {
       httpOnly: true,
-      secure: false, // Compatible with both HTTP and HTTPS deployments
+      secure: false,
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    const response = NextResponse.json({ message: 'Login successful' });
+    response.cookies.set('admin_session', 'authenticated', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
