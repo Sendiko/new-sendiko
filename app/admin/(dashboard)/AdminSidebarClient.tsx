@@ -10,8 +10,8 @@ export default function AdminSidebarClient({ children }: { children: React.React
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
-      router.replace('/admin/login');
-      router.refresh();
+      document.cookie = 'admin_session=; path=/; max-age=0; SameSite=Lax';
+      window.location.href = '/admin/login';
     } catch (err) {
       console.error('Failed to log out:', err);
     }

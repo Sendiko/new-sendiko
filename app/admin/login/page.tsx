@@ -18,6 +18,7 @@ export default function AdminLoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ password }),
       });
 
@@ -25,6 +26,9 @@ export default function AdminLoginPage() {
         const data = await res.json();
         throw new Error(data.error || 'Authentication failed');
       }
+
+      // Explicitly set cookie client-side as fail-safe fallback
+      document.cookie = 'admin_session=authenticated; path=/; max-age=604800; SameSite=Lax';
 
       window.location.href = '/admin';
     } catch (err: unknown) {
