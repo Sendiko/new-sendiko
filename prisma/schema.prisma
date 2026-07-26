@@ -7,7 +7,8 @@ generator client {
 
 // Environment Setup:
 // Local Development: provider = "sqlite" (DATABASE_URL="file:./dev.db")
-// Production: provider = "mysql" (DATABASE_URL="mysql://user:pass@host:3306/db")
+// Production: provider = "mysql" or "postgresql" (DATABASE_URL="mysql://user:pass@host:3306/db")
+// Note: When switching to mysql, add `@db.Text` to long text columns (bio, description, challenge, solution, achievements).
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")

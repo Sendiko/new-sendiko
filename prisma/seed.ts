@@ -22,7 +22,7 @@ async function main() {
     data: {
       name: 'Rizky Sendiko',
       headline: 'Senior Mobile Engineer | iOS, Android & Flutter Architecture Specialist',
-      bio: 'Mobile Software Engineer specializing in scalable Clean Architecture, modern declarative UI frameworks (SwiftUI, Jetpack Compose), high-throughput mobile apps, and robust CI/CD deployment pipelines.',
+      bio: 'Mobile Software Engineer specializing in Clean Architecture, modern declarative UI frameworks (SwiftUI, Jetpack Compose), and robust CI/CD deployment pipelines.',
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600',
       location: 'Bandung, Indonesia',
       yearsExperience: 5,
