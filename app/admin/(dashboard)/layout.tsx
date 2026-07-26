@@ -9,9 +9,14 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
   const cookieStore = await cookies();
   const session = cookieStore.get('admin_session')?.value;
 
-  if (session !== 'authenticated') {
+  console.log('[AUTH LOG] Layout checking admin_session cookie:', session);
+  console.log('[AUTH LOG] All cookies:', cookieStore.getAll());
+
+  if (session !== 'authenticated' && session !== 'true') {
+    console.log('[AUTH LOG] Session invalid! Redirecting to /admin/login');
     redirect('/admin/login');
   }
 
+  console.log('[AUTH LOG] Session valid! Access granted to Admin Dashboard.');
   return <AdminSidebarClient>{children}</AdminSidebarClient>;
 }

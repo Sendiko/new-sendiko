@@ -5,11 +5,19 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { password } = body;
 
-    const expectedPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
+    const envPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const expectedPassword = envPassword.replace(/^["']|["']$/g, '').trim();
+    const inputPassword = (password || '').trim();
 
-    if (!password || password.trim() !== expectedPassword) {
+    console.log('[AUTH LOG] Attempted password:', inputPassword);
+    console.log('[AUTH LOG] Expected password:', expectedPassword);
+
+    if (inputPassword !== expectedPassword) {
+      console.log('[AUTH LOG] Password mismatch!');
       return NextResponse.json({ error: 'Invalid admin passcode' }, { status: 401 });
     }
+
+    console.log('[AUTH LOG] Password correct! Setting admin_session cookie.');
 
     const response = NextResponse.json({ message: 'Login successful' });
 
@@ -18,12 +26,12 @@ export async function POST(request: NextRequest) {
       secure: false,
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('[AUTH LOG] Login error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
