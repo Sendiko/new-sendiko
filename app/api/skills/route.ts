@@ -28,17 +28,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { categoryId, name, proficiency, yearsOfExp, iconUrl, featured, order } = body;
+    const { categoryId, name, yearsOfExp, iconUrl, featured, order } = body;
 
-    if (!categoryId || !name || proficiency === undefined) {
-      return NextResponse.json({ error: 'Missing required fields (categoryId, name, proficiency)' }, { status: 400 });
+    if (!categoryId || !name) {
+      return NextResponse.json({ error: 'Missing required fields (categoryId, name)' }, { status: 400 });
     }
 
     const newSkill = await prisma.skill.create({
       data: {
         categoryId,
         name,
-        proficiency,
         yearsOfExp,
         iconUrl,
         featured: featured ?? false,

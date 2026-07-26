@@ -13,6 +13,7 @@ async function main() {
   await prisma.skill.deleteMany();
   await prisma.skillCategory.deleteMany();
   await prisma.workExperience.deleteMany();
+  await prisma.education.deleteMany();
   await prisma.profile.deleteMany();
   await prisma.contactMessage.deleteMany();
 
@@ -44,10 +45,10 @@ async function main() {
       order: 1,
       skills: {
         create: [
-          { name: 'Swift', proficiency: 95, yearsOfExp: 5.0, featured: true, order: 1 },
-          { name: 'Kotlin', proficiency: 92, yearsOfExp: 4.5, featured: true, order: 2 },
-          { name: 'Dart', proficiency: 88, yearsOfExp: 3.5, featured: true, order: 3 },
-          { name: 'TypeScript', proficiency: 85, yearsOfExp: 4.0, featured: false, order: 4 },
+          { name: 'Swift', yearsOfExp: 5.0, featured: true, order: 1 },
+          { name: 'Kotlin', yearsOfExp: 4.5, featured: true, order: 2 },
+          { name: 'Dart', yearsOfExp: 3.5, featured: true, order: 3 },
+          { name: 'TypeScript', yearsOfExp: 4.0, featured: false, order: 4 },
         ],
       },
     },
@@ -60,10 +61,10 @@ async function main() {
       order: 2,
       skills: {
         create: [
-          { name: 'SwiftUI', proficiency: 95, yearsOfExp: 4.0, featured: true, order: 1 },
-          { name: 'Jetpack Compose', proficiency: 90, yearsOfExp: 3.5, featured: true, order: 2 },
-          { name: 'Flutter', proficiency: 88, yearsOfExp: 3.5, featured: true, order: 3 },
-          { name: 'React Native', proficiency: 80, yearsOfExp: 2.5, featured: false, order: 4 },
+          { name: 'SwiftUI', yearsOfExp: 4.0, featured: true, order: 1 },
+          { name: 'Jetpack Compose', yearsOfExp: 3.5, featured: true, order: 2 },
+          { name: 'Flutter', yearsOfExp: 3.5, featured: true, order: 3 },
+          { name: 'React Native', yearsOfExp: 2.5, featured: false, order: 4 },
         ],
       },
     },
@@ -76,10 +77,10 @@ async function main() {
       order: 3,
       skills: {
         create: [
-          { name: 'Clean Architecture', proficiency: 95, yearsOfExp: 5.0, featured: true, order: 1 },
-          { name: 'MVVM / MVI', proficiency: 95, yearsOfExp: 5.0, featured: true, order: 2 },
-          { name: 'Combine & RxSwift', proficiency: 90, yearsOfExp: 4.0, featured: false, order: 3 },
-          { name: 'Kotlin Coroutines & Flow', proficiency: 92, yearsOfExp: 4.0, featured: false, order: 4 },
+          { name: 'Clean Architecture', yearsOfExp: 5.0, featured: true, order: 1 },
+          { name: 'MVVM / MVI', yearsOfExp: 5.0, featured: true, order: 2 },
+          { name: 'Combine & RxSwift', yearsOfExp: 4.0, featured: false, order: 3 },
+          { name: 'Kotlin Coroutines & Flow', yearsOfExp: 4.0, featured: false, order: 4 },
         ],
       },
     },
@@ -92,9 +93,9 @@ async function main() {
       order: 4,
       skills: {
         create: [
-          { name: 'CI/CD (Fastlane & GitHub Actions)', proficiency: 88, yearsOfExp: 3.5, featured: false, order: 1 },
-          { name: 'XCTest & JUnit', proficiency: 90, yearsOfExp: 4.5, featured: false, order: 2 },
-          { name: 'Firebase & App Center', proficiency: 85, yearsOfExp: 4.0, featured: false, order: 3 },
+          { name: 'CI/CD (Fastlane & GitHub Actions)', yearsOfExp: 3.5, featured: false, order: 1 },
+          { name: 'XCTest & JUnit', yearsOfExp: 4.5, featured: false, order: 2 },
+          { name: 'Firebase & App Center', yearsOfExp: 4.0, featured: false, order: 3 },
         ],
       },
     },
@@ -118,6 +119,8 @@ async function main() {
       tagline: 'Real-time Android field ticketing & bus capacity management tool',
       description: 'Engineered for Bandung Tour on Bus staff to manage ticket verification, live fleet occupancy, and offline-first queue syncing.',
       longDescription: 'High-speed field operations app built with Kotlin and Jetpack Compose. Utilizes camera hardware acceleration for instant QR code scanning and a robust offline-first Room database synchronization engine.',
+      challenge: 'Field ticketing staff operated in outdoor, high-glare environments with inconsistent cellular connectivity, experiencing frequent ticket validation failures and queue bottlenecks during peak bus operations.',
+      solution: 'Architected an offline-first Android solution utilizing Room DB for local queueing, CameraX with hardware acceleration for sub-100ms QR scanning, and background WebSocket synchronization when back online.',
       platform: 'ANDROID',
       status: 'COMPLETED',
       featured: true,
@@ -152,6 +155,8 @@ async function main() {
       tagline: 'Intentional budgeting & high-precision iOS wishlist curator',
       description: 'An elegant iOS application focused on intentional shopping, financial goals tracking, and multi-currency priority management.',
       longDescription: 'Built with iOS native SwiftUI and Combine. Implements soft tonal elevation design, CoreData local persistence with CloudKit synchronization, and custom budget velocity charts.',
+      challenge: 'Users faced cognitive overload from impulsive purchasing apps and needed a structured, high-clarity tool to prioritize financial goals across multiple Apple devices without cloud subscription lock-ins.',
+      solution: 'Designed a native iOS app with SwiftUI and Combine implementing Tonal Layering, SwiftCharts velocity analytics, and silent zero-server CloudKit synchronization.',
       platform: 'IOS',
       status: 'COMPLETED',
       featured: true,
@@ -185,6 +190,8 @@ async function main() {
       tagline: 'High-contrast real-time sports facility monitoring dashboard',
       description: 'Cross-platform mobile and tablet application for arena managers to control bookings, court timers, and athlete memberships.',
       longDescription: 'High-contrast Flutter application built for high-throughput sports complex management with live court status matrix, ambient shadow elevation, and instant booking schedules.',
+      challenge: 'Facility marshals managing high-volume indoor arenas required an ultra-responsive interface to track live court availability, timer countdowns, and booking conflicts on handheld tablets.',
+      solution: 'Engineered a high-contrast Flutter application powered by reactive BLoC state management and Firebase Realtime Database for instant state updates.',
       platform: 'CROSS_PLATFORM',
       status: 'COMPLETED',
       featured: true,
@@ -268,6 +275,22 @@ async function main() {
         'Integrated automated Fastlane CI/CD pipelines cutting deployment cycles from 2 days to 30 minutes.',
       ]),
       order: 2,
+    },
+  });
+
+  // 5. Create Education Background
+  await prisma.education.create({
+    data: {
+      institution: 'Telkom University',
+      degree: 'Software Engineering Associate',
+      fieldOfStudy: 'Applied Software Engineering',
+      location: 'Bandung, Indonesia',
+      startDate: new Date('2017-08-01'),
+      endDate: new Date('2021-06-30'),
+      isCurrent: false,
+      grade: 'GPA 3.71 / 4.00',
+      description: 'Specialized in Mobile Computing, Algorithms, Clean Software Architecture, and Distributed Systems.',
+      order: 1,
     },
   });
 
