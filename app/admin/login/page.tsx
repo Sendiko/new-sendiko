@@ -30,7 +30,8 @@ export default function AdminLoginPage() {
       // Explicitly set cookie client-side as fail-safe fallback
       document.cookie = 'admin_session=authenticated; path=/; max-age=604800; SameSite=Lax';
 
-      window.location.href = '/admin';
+      // Force fresh server navigation bypassing prefetch router cache
+      window.location.href = '/admin?auth=' + Date.now();
     } catch (err: unknown) {
       console.error(err);
       setError(err instanceof Error ? err.message : 'Login failed');
