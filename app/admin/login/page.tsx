@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
+  const [statusMsg, setStatusMsg] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setStatusMsg('Authenticating passcode...');
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -22,19 +22,26 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ password }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || 'Authentication failed');
       }
+
+      setStatusMsg('✓ Passcode accepted! Setting session cookie...');
 
       // Explicitly set cookie client-side as fail-safe fallback
       document.cookie = 'admin_session=authenticated; path=/; max-age=604800; SameSite=Lax';
 
-      // Force fresh server navigation bypassing prefetch router cache
-      window.location.href = '/admin?auth=' + Date.now();
+      setStatusMsg('✓ Cookie saved. Redirecting to admin console...');
+
+      setTimeout(() => {
+        window.location.href = '/admin?auth=' + Date.now();
+      }, 800);
     } catch (err: unknown) {
       console.error(err);
       setError(err instanceof Error ? err.message : 'Login failed');
+      setStatusMsg('');
       setLoading(false);
     }
   };
@@ -45,7 +52,7 @@ export default function AdminLoginPage() {
         
         {/* Header Branding */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-[#006591] text-white font-mono font-bold text-xl flex items-center justify-center mx-auto shadow-md">
+          <div className="w-12 h-12 rounded-xl bg-[#006591] text-[#ffffff] font-mono font-bold text-xl flex items-center justify-center mx-auto shadow-md">
             AD
           </div>
           <h1 className="text-2xl font-bold font-sans tracking-tight">
@@ -59,6 +66,12 @@ export default function AdminLoginPage() {
         {error && (
           <div className="p-3.5 rounded-lg bg-rose-950/80 border border-rose-500/40 text-rose-300 text-xs font-mono text-center">
             {error}
+          </div>
+        )}
+
+        {statusMsg && !error && (
+          <div className="p-3 rounded-lg bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-mono text-center">
+            {statusMsg}
           </div>
         )}
 
@@ -81,7 +94,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[#006591] hover:bg-[#39b8fd] hover:text-[#091426] font-bold text-sm rounded-lg transition-all shadow-md disabled:opacity-50 font-mono"
+            className="w-full py-3 bg-[#006591] hover:bg-[#39b8fd] hover:text-[#091426] font-bold text-sm rounded-lg transition-all shadow-md disabled:opacity-50 font-mono cursor-pointer"
           >
             {loading ? 'Authenticating...' : 'Unlock Admin Console'}
           </button>
