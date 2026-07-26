@@ -252,9 +252,9 @@ async function main() {
       isCurrent: true,
       description: 'Lead mobile architect overseeing iOS and Android core application engineering, UI design systems, and app release pipelines.',
       achievements: JSON.stringify([
-        'Architected declarative design system shared across iOS (SwiftUI) and Android (Compose).',
-        'Reduced app launch latency by 45% through aggressive startup profiling and lazy initialization.',
-        'Mentored 6 junior/mid-level engineers in Clean Architecture and automated testing.',
+        'Architected design system for SwiftUI and Compose.',
+        'Reduced app launch latency by 45% via profiling.',
+        'Mentored 6 engineers in Clean Architecture and testing.',
       ]),
       order: 1,
     },
@@ -271,8 +271,8 @@ async function main() {
       isCurrent: false,
       description: 'Developed native iOS (Swift) and Flutter client applications for high-volume fintech and logistics enterprise clients.',
       achievements: JSON.stringify([
-        'Shipped 5 production applications to the App Store and Google Play with 4.7+ average rating.',
-        'Integrated automated Fastlane CI/CD pipelines cutting deployment cycles from 2 days to 30 minutes.',
+        'Shipped 5 production apps to App Store & Google Play.',
+        'Integrated Fastlane CI/CD pipelines cutting build cycles.',
       ]),
       order: 2,
     },
