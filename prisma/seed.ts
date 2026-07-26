@@ -1,0 +1,284 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  console.log('Seeding Mobile Engineering Portfolio database...');
+
+  // Clean existing data
+  await prisma.projectSkill.deleteMany();
+  await prisma.projectFeature.deleteMany();
+  await prisma.projectAsset.deleteMany();
+  await prisma.project.deleteMany();
+  await prisma.skill.deleteMany();
+  await prisma.skillCategory.deleteMany();
+  await prisma.workExperience.deleteMany();
+  await prisma.profile.deleteMany();
+  await prisma.contactMessage.deleteMany();
+
+  // 1. Create Profile
+  const profile = await prisma.profile.create({
+    data: {
+      name: 'Rizky Sendiko',
+      headline: 'Senior Mobile Engineer | iOS, Android & Flutter Architecture Specialist',
+      bio: 'Mobile Software Engineer specializing in scalable Clean Architecture, modern declarative UI frameworks (SwiftUI, Jetpack Compose), high-throughput mobile apps, and robust CI/CD deployment pipelines.',
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600',
+      location: 'Bandung, Indonesia',
+      yearsExperience: 5,
+      appsPublished: 12,
+      totalDownloads: 250000,
+      githubUrl: 'https://github.com',
+      linkedinUrl: 'https://linkedin.com',
+      twitterUrl: 'https://x.com',
+      email: 'contact@sendiko.dev',
+      availableForHire: true,
+    },
+  });
+
+  console.log(`Created profile for ${profile.name}`);
+
+  // 2. Create Skill Categories and Skills
+  const langCategory = await prisma.skillCategory.create({
+    data: {
+      name: 'Languages',
+      order: 1,
+      skills: {
+        create: [
+          { name: 'Swift', proficiency: 95, yearsOfExp: 5.0, featured: true, order: 1 },
+          { name: 'Kotlin', proficiency: 92, yearsOfExp: 4.5, featured: true, order: 2 },
+          { name: 'Dart', proficiency: 88, yearsOfExp: 3.5, featured: true, order: 3 },
+          { name: 'TypeScript', proficiency: 85, yearsOfExp: 4.0, featured: false, order: 4 },
+        ],
+      },
+    },
+    include: { skills: true },
+  });
+
+  const frameworkCategory = await prisma.skillCategory.create({
+    data: {
+      name: 'Mobile Frameworks & UI',
+      order: 2,
+      skills: {
+        create: [
+          { name: 'SwiftUI', proficiency: 95, yearsOfExp: 4.0, featured: true, order: 1 },
+          { name: 'Jetpack Compose', proficiency: 90, yearsOfExp: 3.5, featured: true, order: 2 },
+          { name: 'Flutter', proficiency: 88, yearsOfExp: 3.5, featured: true, order: 3 },
+          { name: 'React Native', proficiency: 80, yearsOfExp: 2.5, featured: false, order: 4 },
+        ],
+      },
+    },
+    include: { skills: true },
+  });
+
+  const archCategory = await prisma.skillCategory.create({
+    data: {
+      name: 'Architecture & State',
+      order: 3,
+      skills: {
+        create: [
+          { name: 'Clean Architecture', proficiency: 95, yearsOfExp: 5.0, featured: true, order: 1 },
+          { name: 'MVVM / MVI', proficiency: 95, yearsOfExp: 5.0, featured: true, order: 2 },
+          { name: 'Combine & RxSwift', proficiency: 90, yearsOfExp: 4.0, featured: false, order: 3 },
+          { name: 'Kotlin Coroutines & Flow', proficiency: 92, yearsOfExp: 4.0, featured: false, order: 4 },
+        ],
+      },
+    },
+    include: { skills: true },
+  });
+
+  const devopsCategory = await prisma.skillCategory.create({
+    data: {
+      name: 'DevOps & Testing',
+      order: 4,
+      skills: {
+        create: [
+          { name: 'CI/CD (Fastlane & GitHub Actions)', proficiency: 88, yearsOfExp: 3.5, featured: false, order: 1 },
+          { name: 'XCTest & JUnit', proficiency: 90, yearsOfExp: 4.5, featured: false, order: 2 },
+          { name: 'Firebase & App Center', proficiency: 85, yearsOfExp: 4.0, featured: false, order: 3 },
+        ],
+      },
+    },
+    include: { skills: true },
+  });
+
+  // Collect skills map for project tagging
+  const allSkills = [
+    ...langCategory.skills,
+    ...frameworkCategory.skills,
+    ...archCategory.skills,
+    ...devopsCategory.skills,
+  ];
+  const skillMap = new Map(allSkills.map((s) => [s.name, s.id]));
+
+  // 3. Create Projects
+  const bandrosApp = await prisma.project.create({
+    data: {
+      slug: 'bandros-field-ops',
+      title: 'Bandros Field Operations App',
+      tagline: 'Real-time Android field ticketing & bus capacity management tool',
+      description: 'Engineered for Bandung Tour on Bus staff to manage ticket verification, live fleet occupancy, and offline-first queue syncing.',
+      longDescription: 'High-speed field operations app built with Kotlin and Jetpack Compose. Utilizes camera hardware acceleration for instant QR code scanning and a robust offline-first Room database synchronization engine.',
+      platform: 'ANDROID',
+      status: 'COMPLETED',
+      featured: true,
+      featuredOrder: 1,
+      coverImageUrl: 'https://lh3.googleusercontent.com/aida/AP1WRLvBjl65eNl-iIYk18OsQ2vYC-kOl-bexXGdA_nZ0T1HKNlUBzwbU2X_0bUrB7kMsasHVOem--hopDSR3E9WHlE9RCYlFuXOrH0kGjdfgw6cBft8s9RAAp-sQhnkee0VI9i85Iq43kEyxKlrLJccQUimR4499SpKJt8MeCNWi-eFdPMfhT_5LVNZN1b8QXCK4jMPaa8ZZWWozTbYsiwKhOF-Ah3j7iKnu00TrYaf_D2WeMWDSfaKeo3EsiBM',
+      architecture: 'Clean Architecture + MVI + Kotlin Coroutines',
+      downloadsCount: 50000,
+      rating: 4.8,
+      testCoverage: 92.5,
+      githubUrl: 'https://github.com',
+      playStoreUrl: 'https://play.google.com',
+      features: {
+        create: [
+          { title: 'Sub-100ms QR Verification', description: 'Custom CameraX integration for ultra-fast ticket scanning under glare.', order: 1 },
+          { title: 'Offline-First Sync', description: 'Queues transactions locally and resolves network conflicts upon reconnection.', order: 2 },
+          { title: 'Live Fleet Occupancy', description: 'WebSocket integration displaying real-time passenger loads across routes.', order: 3 },
+        ],
+      },
+      assets: {
+        create: [
+          { url: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=800', caption: 'Dashboard Overview', type: 'IMAGE', order: 1 },
+          { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800', caption: 'Ticket Verification Flow', type: 'IMAGE', order: 2 },
+        ],
+      },
+    },
+  });
+
+  const wishlistApp = await prisma.project.create({
+    data: {
+      slug: 'priority-wishlist-manager',
+      title: 'Priority Wishlist Manager',
+      tagline: 'Intentional budgeting & high-precision iOS wishlist curator',
+      description: 'An elegant iOS application focused on intentional shopping, financial goals tracking, and multi-currency priority management.',
+      longDescription: 'Built with iOS native SwiftUI and Combine. Implements soft tonal elevation design, CoreData local persistence with CloudKit synchronization, and custom budget velocity charts.',
+      platform: 'IOS',
+      status: 'COMPLETED',
+      featured: true,
+      featuredOrder: 2,
+      coverImageUrl: 'https://lh3.googleusercontent.com/aida/AP1WRLu-VlNUSCH3BoJw25nKvkH5L0ngDLWRiLBrvGEsCeTk9Co63bcLOjh3uApXAHurnMwgcgJUzL2vBopXWWK-vgEoJX5Bt-6p4eIgna13QrSWvgaIskpB9wfl2nYUKF6nRzgYaCF92n4lmVVeAJomJv9_-Lo-j4Vl8djp0i-QFxSPYSz1b8GOS9xNjV2Ojo1Jm1B32AEGNy5Olor-YiaOEjPnO8Te0HgjyQ6DtyfK5XxzeIIOsw7DW-rMKv0',
+      architecture: 'Clean Architecture + MVVM + Combine + SwiftData',
+      downloadsCount: 120000,
+      rating: 4.9,
+      testCoverage: 94.0,
+      appStoreUrl: 'https://apps.apple.com',
+      githubUrl: 'https://github.com',
+      features: {
+        create: [
+          { title: 'Tonal Priority Matrix', description: 'Visual priority categorization to curb impulse purchasing decisions.', order: 1 },
+          { title: 'CloudKit Cross-Device Sync', description: 'Instant, encrypted sync between iOS, iPadOS, and macOS.', order: 2 },
+          { title: 'Interactive Budget Velocity', description: 'SwiftCharts visualizations tracking monthly savings progress.', order: 3 },
+        ],
+      },
+      assets: {
+        create: [
+          { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=800', caption: 'Wishlist Grid View', type: 'IMAGE', order: 1 },
+        ],
+      },
+    },
+  });
+
+  const sigmaCourtApp = await prisma.project.create({
+    data: {
+      slug: 'sigma-court-management',
+      title: 'Sigma Court Management System',
+      tagline: 'High-contrast real-time sports facility monitoring dashboard',
+      description: 'Cross-platform mobile and tablet application for arena managers to control bookings, court timers, and athlete memberships.',
+      longDescription: 'High-contrast Flutter application built for high-throughput sports complex management with live court status matrix, ambient shadow elevation, and instant booking schedules.',
+      platform: 'CROSS_PLATFORM',
+      status: 'COMPLETED',
+      featured: true,
+      featuredOrder: 3,
+      coverImageUrl: 'https://lh3.googleusercontent.com/aida/AP1WRLvNOBAvO9EjSNkEJe3sYm-KBi5RkINgrV__vOBWGi4XP-89V4cdMens22YWudgRXYI7gnjnEOIB_H4CVxwHYB3Zoah9livshvXRHeBsMNS2K26s-S0B3SH2TDLa8M0oXO2EPLSJJJ2erLb45PrkxJSDk4XuH33gQ9prC0Bj43u8UV13MKDGX2bAiBqdB7kbHo_n5gslMWE0qKc6aVt76nCozghF_Eo-mimKZ26fNWTRM6wAeK4jVL9Cn0zk',
+      architecture: 'Clean Architecture + BLoC + Firebase',
+      downloadsCount: 80000,
+      rating: 4.7,
+      testCoverage: 90.0,
+      demoUrl: 'https://demo.sigmacourt.dev',
+      features: {
+        create: [
+          { title: 'Live Court Matrix', description: 'Real-time court availability status and active session countdown timers.', order: 1 },
+          { title: 'Multi-Role Staff Access', description: 'Granular permissions for marshals, referees, and facility administrators.', order: 2 },
+        ],
+      },
+    },
+  });
+
+  // Attach skills to projects
+  const projectSkillData = [
+    { projectId: bandrosApp.id, skillName: 'Kotlin' },
+    { projectId: bandrosApp.id, skillName: 'Jetpack Compose' },
+    { projectId: bandrosApp.id, skillName: 'Clean Architecture' },
+    { projectId: bandrosApp.id, skillName: 'Kotlin Coroutines & Flow' },
+
+    { projectId: wishlistApp.id, skillName: 'Swift' },
+    { projectId: wishlistApp.id, skillName: 'SwiftUI' },
+    { projectId: wishlistApp.id, skillName: 'MVVM / MVI' },
+    { projectId: wishlistApp.id, skillName: 'Combine & RxSwift' },
+
+    { projectId: sigmaCourtApp.id, skillName: 'Dart' },
+    { projectId: sigmaCourtApp.id, skillName: 'Flutter' },
+    { projectId: sigmaCourtApp.id, skillName: 'Clean Architecture' },
+    { projectId: sigmaCourtApp.id, skillName: 'Firebase & App Center' },
+  ];
+
+  for (const item of projectSkillData) {
+    const skillId = skillMap.get(item.skillName);
+    if (skillId) {
+      await prisma.projectSkill.create({
+        data: {
+          projectId: item.projectId,
+          skillId: skillId,
+        },
+      });
+    }
+  }
+
+  // 4. Create Work Experience
+  await prisma.workExperience.create({
+    data: {
+      company: 'Tech Mobile Inc.',
+      role: 'Senior Mobile Software Engineer',
+      employmentType: 'FULL_TIME',
+      location: 'Bandung, Indonesia',
+      startDate: new Date('2023-01-01'),
+      isCurrent: true,
+      description: 'Lead mobile architect overseeing iOS and Android core application engineering, UI design systems, and app release pipelines.',
+      achievements: JSON.stringify([
+        'Architected declarative design system shared across iOS (SwiftUI) and Android (Compose).',
+        'Reduced app launch latency by 45% through aggressive startup profiling and lazy initialization.',
+        'Mentored 6 junior/mid-level engineers in Clean Architecture and automated testing.',
+      ]),
+      order: 1,
+    },
+  });
+
+  await prisma.workExperience.create({
+    data: {
+      company: 'AppStudio Solutions',
+      role: 'Mobile Application Developer',
+      employmentType: 'FULL_TIME',
+      location: 'Jakarta, Indonesia',
+      startDate: new Date('2021-03-01'),
+      endDate: new Date('2022-12-31'),
+      isCurrent: false,
+      description: 'Developed native iOS (Swift) and Flutter client applications for high-volume fintech and logistics enterprise clients.',
+      achievements: JSON.stringify([
+        'Shipped 5 production applications to the App Store and Google Play with 4.7+ average rating.',
+        'Integrated automated Fastlane CI/CD pipelines cutting deployment cycles from 2 days to 30 minutes.',
+      ]),
+      order: 2,
+    },
+  });
+
+  console.log('Mobile Engineering Portfolio database seeded successfully!');
+}
+
+main()
+  .catch((e) => {
+    console.error('Error seeding database:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
