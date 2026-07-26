@@ -12,10 +12,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid admin passcode' }, { status: 401 });
     }
 
+    const isHttps = request.headers.get('x-forwarded-proto') === 'https' || request.url.startsWith('https://');
+
     const cookieStore = await cookies();
     cookieStore.set('admin_session', 'authenticated', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days

@@ -26,12 +26,10 @@ export default function AdminLoginPage() {
         throw new Error(data.error || 'Authentication failed');
       }
 
-      router.push('/admin');
-      router.refresh();
+      window.location.href = '/admin';
     } catch (err: unknown) {
       console.error(err);
       setError(err instanceof Error ? err.message : 'Login failed');
-    } finally {
       setLoading(false);
     }
   };
