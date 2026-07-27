@@ -75,9 +75,14 @@ export default function AdminProjectsPage() {
     fetchProjects();
   }, []);
 
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
   const openCreateForm = () => {
     setFormData(initialForm);
     setEditingId(null);
+    setFormError(null);
+    setSubmitting(false);
     setIsEditing(true);
   };
 
@@ -105,6 +110,8 @@ export default function AdminProjectsPage() {
       testCoverage: proj.testCoverage || 90.0,
     });
     setEditingId(proj.id);
+    setFormError(null);
+    setSubmitting(false);
     setIsEditing(true);
   };
 
@@ -137,24 +144,43 @@ export default function AdminProjectsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    setFormError(null);
+
+    // Auto slugify title if slug is empty
+    let finalSlug = formData.slug.trim();
+    if (!finalSlug && formData.title) {
+      finalSlug = formData.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    }
+
+    const payload = { ...formData, slug: finalSlug };
+
     try {
-      if (editingId) {
-        await fetch(`/api/projects/${editingId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
-      } else {
-        await fetch('/api/projects', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
+      const res = editingId
+        ? await fetch(`/api/projects/${editingId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+        : await fetch('/api/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.error || json.message || 'Failed to save project.');
       }
+
       setIsEditing(false);
       fetchProjects();
     } catch (err) {
       console.error('Failed to save project:', err);
+      setFormError(err instanceof Error ? err.message : 'Failed to save project.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -194,6 +220,19 @@ export default function AdminProjectsPage() {
               Cancel
             </button>
           </div>
+
+          {formError && (
+            <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs font-mono font-bold flex items-center justify-between">
+              <span>⚠️ {formError}</span>
+              <button
+                type="button"
+                onClick={() => setFormError(null)}
+                className="text-rose-600 hover:text-rose-900 font-bold ml-2 text-sm"
+              >
+                ×
+              </button>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
@@ -414,14 +453,16 @@ export default function AdminProjectsPage() {
           <div className="flex gap-4">
             <button
               type="submit"
-              className="px-6 py-2 bg-[#091426] text-white rounded text-xs font-mono font-bold"
+              disabled={submitting}
+              className="px-6 py-2 bg-[#091426] hover:bg-[#006591] text-white rounded text-xs font-mono font-bold disabled:opacity-50 transition-colors"
             >
-              {editingId ? 'Update Project' : 'Save Project'}
+              {submitting ? 'Saving Project...' : editingId ? 'Update Project' : 'Save Project'}
             </button>
             <button
               type="button"
+              disabled={submitting}
               onClick={() => setIsEditing(false)}
-              className="px-6 py-2 bg-[#e0e3e5] text-gray-700 rounded text-xs font-mono"
+              className="px-6 py-2 bg-[#e0e3e5] text-gray-700 rounded text-xs font-mono disabled:opacity-50"
             >
               Cancel
             </button>

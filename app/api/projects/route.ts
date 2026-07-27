@@ -73,14 +73,16 @@ export async function POST(request: NextRequest) {
       status,
     } = body;
 
-    if (!title || !slug || !tagline || !description) {
+    const sanitizedSlug = slug ? String(slug).trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : '';
+
+    if (!title || !sanitizedSlug || !tagline || !description) {
       return NextResponse.json({ error: 'Missing required fields (title, slug, tagline, description)' }, { status: 400 });
     }
 
     const project = await prisma.project.create({
       data: {
         title,
-        slug,
+        slug: sanitizedSlug,
         tagline,
         description,
         longDescription,
@@ -96,6 +98,9 @@ export async function POST(request: NextRequest) {
         appStoreUrl,
         playStoreUrl,
         demoUrl,
+        downloadsCount: body.downloadsCount ? Number(body.downloadsCount) : 0,
+        rating: body.rating !== undefined && body.rating !== '' ? Number(body.rating) : 5.0,
+        testCoverage: body.testCoverage !== undefined && body.testCoverage !== '' && body.testCoverage !== null ? Number(body.testCoverage) : null,
         features: features ? {
           create: features.map((f: { title: string; description: string; icon?: string }, index: number) => ({
             title: f.title,
@@ -117,8 +122,15 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ data: project, message: 'Project created successfully' }, { status: 201 });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error creating project:', error);
-    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
+    let errorMessage = 'Failed to create project';
+    const err = error as { code?: string; message?: string };
+    if (err?.code === 'P2002') {
+      errorMessage = 'A project with this URL slug already exists. Please enter a unique URL slug.';
+    } else if (err?.message) {
+      errorMessage = err.message;
+    }
+    return NextResponse.json({ error: errorMessage }, { status: 400 });
   }
 }

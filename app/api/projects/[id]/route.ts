@@ -68,9 +68,16 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     });
 
     return NextResponse.json({ data: updatedProject, message: 'Project updated successfully' });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error updating project:', error);
-    return NextResponse.json({ error: 'Failed to update project' }, { status: 500 });
+    let errorMessage = 'Failed to update project';
+    const err = error as { code?: string; message?: string };
+    if (err?.code === 'P2002') {
+      errorMessage = 'A project with this URL slug already exists. Please enter a unique URL slug.';
+    } else if (err?.message) {
+      errorMessage = err.message;
+    }
+    return NextResponse.json({ error: errorMessage }, { status: 400 });
   }
 }
 
