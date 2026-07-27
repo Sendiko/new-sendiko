@@ -349,6 +349,58 @@ export default function AdminProjectsPage() {
             )}
           </div>
 
+          {/* External Links */}
+          <div className="space-y-3 pt-2 border-t border-gray-200">
+            <h4 className="text-xs font-mono font-bold text-gray-700 uppercase">
+              🔗 External Links & Store URLs
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <label className="block text-xs font-mono text-gray-700">GitHub Repository URL</label>
+                <input
+                  type="url"
+                  value={formData.githubUrl}
+                  onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+                  placeholder="https://github.com/..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-hidden"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-mono text-gray-700">App Store URL</label>
+                <input
+                  type="url"
+                  value={formData.appStoreUrl}
+                  onChange={(e) => setFormData({ ...formData, appStoreUrl: e.target.value })}
+                  placeholder="https://apps.apple.com/..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-hidden"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-mono text-gray-700">Play Store URL</label>
+                <input
+                  type="url"
+                  value={formData.playStoreUrl}
+                  onChange={(e) => setFormData({ ...formData, playStoreUrl: e.target.value })}
+                  placeholder="https://play.google.com/..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-hidden"
+                />
+              </div>
+
+              <div className="space-y-1 sm:col-span-3">
+                <label className="block text-xs font-mono text-gray-700">Demo URL</label>
+                <input
+                  type="url"
+                  value={formData.demoUrl}
+                  onChange={(e) => setFormData({ ...formData, demoUrl: e.target.value })}
+                  placeholder="https://demo.example.com"
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-hidden"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-1 pt-2 border-t border-gray-200">
             <FileUpload
               label="Cover Image (MinIO Storage)"

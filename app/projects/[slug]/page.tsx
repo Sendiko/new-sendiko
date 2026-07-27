@@ -234,39 +234,81 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         {/* Right Sidebar: Metrics & Tech Stack */}
         <div className="lg:col-span-4 space-y-8">
           
-          {/* Key Engineering Metrics */}
-          <div className="bg-white p-6 rounded-xl border border-[#e0e3e5] shadow-xs space-y-4">
-            <h3 className="text-xs font-mono font-bold text-[#006591] uppercase tracking-wider">
-              Project Performance Metrics
-            </h3>
-            
-            <div className="space-y-3 pt-2">
-              {project.downloadsCount && (
-                <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
-                  <span className="text-gray-600 font-sans">Total Downloads</span>
-                  <span className="font-mono font-bold text-[#091426]">{project.downloadsCount.toLocaleString()}+</span>
-                </div>
-              )}
-              {project.rating && (
-                <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
-                  <span className="text-gray-600 font-sans">Store Rating</span>
-                  <span className="font-mono font-bold text-amber-600">{project.rating.toFixed(1)} / 5.0 ★</span>
-                </div>
-              )}
-              {project.testCoverage && (
-                <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
-                  <span className="text-gray-600 font-sans">Test Coverage</span>
-                  <span className="font-mono font-bold text-[#00a291]">{project.testCoverage}%</span>
-                </div>
-              )}
-              {project.architecture && (
-                <div className="py-2 border-b border-gray-100 text-sm space-y-1">
-                  <span className="text-gray-600 font-sans block">Pattern & Architecture</span>
-                  <span className="font-mono font-semibold text-xs text-[#006591] block">{project.architecture}</span>
-                </div>
-              )}
+          {/* Key Engineering Metrics or Project Details */}
+          {project.appStoreUrl || project.playStoreUrl ? (
+            <div className="bg-white p-6 rounded-xl border border-[#e0e3e5] shadow-xs space-y-4">
+              <h3 className="text-xs font-mono font-bold text-[#006591] uppercase tracking-wider">
+                Project Performance Metrics
+              </h3>
+              
+              <div className="space-y-3 pt-2">
+                {project.downloadsCount ? (
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
+                    <span className="text-gray-600 font-sans">Total Downloads</span>
+                    <span className="font-mono font-bold text-[#091426]">{project.downloadsCount.toLocaleString()}+</span>
+                  </div>
+                ) : null}
+                {project.rating ? (
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
+                    <span className="text-gray-600 font-sans">Store Rating</span>
+                    <span className="font-mono font-bold text-amber-600">{project.rating.toFixed(1)} / 5.0 ★</span>
+                  </div>
+                ) : null}
+                {project.testCoverage ? (
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
+                    <span className="text-gray-600 font-sans">Test Coverage</span>
+                    <span className="font-mono font-bold text-[#00a291]">{project.testCoverage}%</span>
+                  </div>
+                ) : null}
+                {project.architecture ? (
+                  <div className="py-2 border-b border-gray-100 text-sm space-y-1">
+                    <span className="text-gray-600 font-sans block">Pattern & Architecture</span>
+                    <span className="font-mono font-semibold text-xs text-[#006591] block">{project.architecture}</span>
+                  </div>
+                ) : null}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-white p-6 rounded-xl border border-[#e0e3e5] shadow-xs space-y-4">
+              <h3 className="text-xs font-mono font-bold text-[#006591] uppercase tracking-wider">
+                Project Details
+              </h3>
+              
+              <div className="space-y-3 pt-2">
+                {project.status && (
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
+                    <span className="text-gray-600 font-sans">Status</span>
+                    <span className="font-mono font-bold text-[#091426] uppercase">{project.status}</span>
+                  </div>
+                )}
+                {project.githubUrl && (
+                  <div className="py-2 border-b border-gray-100 text-sm space-y-1">
+                    <span className="text-gray-600 font-sans block">GitHub Repository</span>
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-mono font-semibold text-xs text-[#006591] hover:underline truncate block"
+                    >
+                      {project.githubUrl}
+                    </a>
+                  </div>
+                )}
+                {project.architecture && (
+                  <div className="py-2 border-b border-gray-100 text-sm space-y-1">
+                    <span className="text-gray-600 font-sans block">Pattern & Architecture</span>
+                    <span className="font-mono font-semibold text-xs text-[#006591] block">{project.architecture}</span>
+                  </div>
+                )}
+                {project.testCoverage ? (
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100 text-sm">
+                    <span className="text-gray-600 font-sans">Test Coverage</span>
+                    <span className="font-mono font-bold text-[#00a291]">{project.testCoverage}%</span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          )}
 
           {/* Tech Stack Chips */}
           {project.skills && project.skills.length > 0 && (
