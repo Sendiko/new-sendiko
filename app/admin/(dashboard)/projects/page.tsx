@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import FileUpload from '@/components/ui/FileUpload';
 
 interface ProjectItem {
   id: string;
@@ -274,13 +275,13 @@ export default function AdminProjectsPage() {
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-xs font-mono text-gray-700">Cover Image URL</label>
-              <input
-                type="text"
+            <div className="space-y-1 sm:col-span-3 pt-2 border-t border-gray-200">
+              <FileUpload
+                label="Cover Image (MinIO Storage)"
                 value={formData.coverImageUrl}
-                onChange={(e) => setFormData({ ...formData, coverImageUrl: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                onChange={(url) => setFormData({ ...formData, coverImageUrl: url })}
+                folder="projects"
+                placeholder="Upload to MinIO or paste image URL..."
               />
             </div>
           </div>

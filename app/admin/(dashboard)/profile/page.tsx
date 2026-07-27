@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import FileUpload from '@/components/ui/FileUpload';
 
 export default function AdminProfilePage() {
   const [formData, setFormData] = useState({
@@ -138,16 +139,13 @@ export default function AdminProfilePage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-mono font-medium text-gray-700 uppercase">
-              Avatar Image URL
-            </label>
-            <input
-              type="text"
+          <div className="space-y-1.5 sm:col-span-2">
+            <FileUpload
+              label="Avatar Image (MinIO Object Storage)"
               value={formData.avatarUrl || ''}
-              onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
-              placeholder="https://..."
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-[#006591] outline-hidden"
+              onChange={(url) => setFormData({ ...formData, avatarUrl: url })}
+              folder="avatars"
+              placeholder="Upload avatar to MinIO or paste URL..."
             />
           </div>
 

@@ -24,6 +24,7 @@ export default function AdminSidebarClient({ children }: { children: React.React
     { name: 'Skills & Tech Stack', href: '/admin/skills', icon: '⚡' },
     { name: 'Work Experience', href: '/admin/experiences', icon: '💼' },
     { name: 'Education', href: '/admin/education', icon: '🎓' },
+    { name: 'Storage & Media', href: '/admin/storage', icon: '☁️' },
     { name: 'Messages & Inbox', href: '/admin/messages', icon: '📩' },
   ];
 
