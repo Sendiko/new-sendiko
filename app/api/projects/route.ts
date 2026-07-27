@@ -51,7 +51,27 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, slug, tagline, description, platform, longDescription, coverImageUrl, architecture, githubUrl, appStoreUrl, playStoreUrl, demoUrl, skillIds, features } = body;
+    const {
+      title,
+      slug,
+      tagline,
+      description,
+      platform,
+      longDescription,
+      coverImageUrl,
+      architecture,
+      githubUrl,
+      appStoreUrl,
+      playStoreUrl,
+      demoUrl,
+      skillIds,
+      features,
+      featured,
+      featuredOrder,
+      challenge,
+      solution,
+      status,
+    } = body;
 
     if (!title || !slug || !tagline || !description) {
       return NextResponse.json({ error: 'Missing required fields (title, slug, tagline, description)' }, { status: 400 });
@@ -64,7 +84,12 @@ export async function POST(request: NextRequest) {
         tagline,
         description,
         longDescription,
+        challenge,
+        solution,
         platform: platform || 'CROSS_PLATFORM',
+        status: status || 'COMPLETED',
+        featured: Boolean(featured),
+        featuredOrder: featuredOrder !== undefined ? Number(featuredOrder) : 0,
         coverImageUrl,
         architecture,
         githubUrl,

@@ -55,9 +55,11 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
+    const { id: _id, features, assets, skills, createdAt, updatedAt, ...updateData } = body;
+
     const updatedProject = await prisma.project.update({
       where: { id },
-      data: body,
+      data: updateData,
       include: {
         features: true,
         assets: true,

@@ -118,6 +118,23 @@ export default function AdminProjectsPage() {
     }
   };
 
+  const handleToggleFeatured = async (proj: ProjectItem) => {
+    const updatedFeatured = !proj.featured;
+    setProjects((prev) =>
+      prev.map((p) => (p.id === proj.id ? { ...p, featured: updatedFeatured } : p))
+    );
+    try {
+      await fetch(`/api/projects/${proj.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ featured: updatedFeatured }),
+      });
+    } catch (err) {
+      console.error('Failed to toggle featured status:', err);
+      fetchProjects();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -265,6 +282,20 @@ export default function AdminProjectsPage() {
             </div>
 
             <div className="space-y-1">
+              <label className="block text-xs font-mono text-gray-700">Status</label>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+              >
+                <option value="COMPLETED">Completed</option>
+                <option value="IN_DEVELOPMENT">In Development</option>
+                <option value="MAINTENANCE">Maintenance</option>
+                <option value="ARCHIVED">Archived</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
               <label className="block text-xs font-mono text-gray-700">Architecture</label>
               <input
                 type="text"
@@ -274,16 +305,58 @@ export default function AdminProjectsPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
               />
             </div>
+          </div>
 
-            <div className="space-y-1 sm:col-span-3 pt-2 border-t border-gray-200">
-              <FileUpload
-                label="Cover Image (MinIO Storage)"
-                value={formData.coverImageUrl}
-                onChange={(url) => setFormData({ ...formData, coverImageUrl: url })}
-                folder="projects"
-                placeholder="Upload to MinIO or paste image URL..."
-              />
+          <div className="p-4 bg-amber-50/50 rounded-lg border border-amber-200/80 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center space-x-3">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={formData.featured}
+                onClick={() => setFormData({ ...formData, featured: !formData.featured })}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                  formData.featured ? 'bg-[#006591]' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                    formData.featured ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+              <div>
+                <label
+                  onClick={() => setFormData({ ...formData, featured: !formData.featured })}
+                  className="block text-xs font-mono font-bold text-gray-900 cursor-pointer select-none"
+                >
+                  Featured Project Showcase
+                </label>
+                <p className="text-[11px] text-gray-500 font-mono">Highlight this project on the homepage featured section</p>
+              </div>
             </div>
+
+            {formData.featured && (
+              <div className="flex items-center space-x-2">
+                <label className="text-xs font-mono text-gray-700 font-medium">Featured Order:</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={formData.featuredOrder}
+                  onChange={(e) => setFormData({ ...formData, featuredOrder: parseInt(e.target.value) || 0 })}
+                  className="w-20 px-3 py-1 border border-gray-300 rounded text-xs bg-white font-mono font-semibold"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-1 pt-2 border-t border-gray-200">
+            <FileUpload
+              label="Cover Image (MinIO Storage)"
+              value={formData.coverImageUrl}
+              onChange={(url) => setFormData({ ...formData, coverImageUrl: url })}
+              folder="projects"
+              placeholder="Upload to MinIO or paste image URL..."
+            />
           </div>
 
           <div className="flex gap-4">
@@ -296,7 +369,7 @@ export default function AdminProjectsPage() {
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-6 py-2 bg-gray-100 text-gray-700 rounded text-xs font-mono"
+              className="px-6 py-2 bg-[#e0e3e5] text-gray-700 rounded text-xs font-mono"
             >
               Cancel
             </button>
@@ -332,13 +405,33 @@ export default function AdminProjectsPage() {
                       {proj.downloadsCount ? `${proj.downloadsCount.toLocaleString()}+` : '-'}
                     </td>
                     <td className="p-4">
-                      {proj.featured ? (
-                        <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-mono text-[10px] font-bold">
-                          YES ({proj.featuredOrder})
+                      <div className="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={proj.featured}
+                          onClick={() => handleToggleFeatured(proj)}
+                          title={proj.featured ? 'Click to unfeature' : 'Click to feature'}
+                          className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                            proj.featured ? 'bg-emerald-500' : 'bg-gray-300'
+                          }`}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                              proj.featured ? 'translate-x-4' : 'translate-x-0'
+                            }`}
+                          />
+                        </button>
+                        <span className="font-mono text-xs">
+                          {proj.featured ? (
+                            <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                              YES ({proj.featuredOrder})
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">No</span>
+                          )}
                         </span>
-                      ) : (
-                        <span className="text-gray-400 font-mono">No</span>
-                      )}
+                      </div>
                     </td>
                     <td className="p-4 text-right space-x-2 font-mono">
                       <button
