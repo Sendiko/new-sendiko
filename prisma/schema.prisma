@@ -57,10 +57,10 @@ model Project {
   slug            String          @unique
   title           String
   tagline         String
-  description     String
-  longDescription String?
-  challenge       String?
-  solution        String?
+  description     String          @db.Text
+  longDescription String?         @db.Text
+  challenge       String?         @db.Text
+  solution        String?         @db.Text
   platform        Platform        @default(CROSS_PLATFORM)
   status          ProjectStatus   @default(COMPLETED)
   featured        Boolean         @default(false)
