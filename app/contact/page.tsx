@@ -8,7 +8,7 @@ export default async function ContactPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
-      
+
       {/* Header */}
       <div className="space-y-4 max-w-3xl">
         <span className="text-xs font-mono font-bold text-[#006591] uppercase tracking-wider">
@@ -24,10 +24,10 @@ export default async function ContactPage() {
 
       {/* Grid Content */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        
+
         {/* Left Column: Developer Information */}
         <div className="lg:col-span-5 space-y-8">
-          
+
           <div className="bg-[#091426] text-white p-8 rounded-xl space-y-6 shadow-md border border-gray-800">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-lg bg-[#006591] flex items-center justify-center font-mono font-bold text-lg text-white">
@@ -99,15 +99,6 @@ export default async function ContactPage() {
               </div>
             </div>
 
-          </div>
-
-          <div className="p-6 bg-white rounded-xl border border-[#e0e3e5] space-y-2 shadow-xs">
-            <h4 className="font-bold text-[#091426] text-base font-sans">
-              Looking for Consulting or Architecture Review?
-            </h4>
-            <p className="text-xs text-gray-600 leading-relaxed font-sans">
-              I provide code health audits, architecture refactoring, and mobile CI/CD pipeline setup for tech teams.
-            </p>
           </div>
 
         </div>
