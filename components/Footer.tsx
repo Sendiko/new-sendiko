@@ -1,6 +1,18 @@
 import Link from 'next/link';
+import prisma from '@/lib/prisma';
 
-export default function Footer() {
+export default async function Footer() {
+  const profile = await prisma.profile.findFirst();
+
+  const getInitials = (name?: string) => {
+    if (!name) return 'RS';
+    return name
+      .split(' ')
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase();
+  };
+
   return (
     <footer className="bg-[#091426] text-white pt-12 pb-8 border-t border-gray-800 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,18 +22,21 @@ export default function Footer() {
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-[#006591] text-white flex items-center justify-center font-mono font-bold text-base">
-                RS
+                {getInitials(profile?.name)}
               </div>
               <span className="font-bold text-lg tracking-tight text-white">
-                Rizky Sendiko
+                {profile?.name || 'Rizky Sendiko'}
               </span>
             </div>
             <p className="text-gray-400 text-sm max-w-md leading-relaxed">
-              Senior Mobile Software Engineer crafting high-performance iOS, Android, and Flutter applications with scalable Clean Architecture.
+              {profile?.bio ||
+                'Senior Mobile Software Engineer crafting high-performance iOS, Android, and Flutter applications with scalable Clean Architecture.'}
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Available for Mobile Engineering Roles
+              {profile?.availableForHire !== false
+                ? 'Available for Mobile Engineering Roles'
+                : 'Not Currently Available for Hire'}
             </div>
           </div>
 
@@ -60,35 +75,41 @@ export default function Footer() {
               Connect
             </h4>
             <div className="flex flex-col space-y-2 text-sm text-gray-300">
+              {profile?.githubUrl && (
+                <a
+                  href={profile.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white flex items-center gap-2 transition-colors"
+                >
+                  <span>GitHub</span>
+                </a>
+              )}
+              {profile?.linkedinUrl && (
+                <a
+                  href={profile.linkedinUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white flex items-center gap-2 transition-colors"
+                >
+                  <span>LinkedIn</span>
+                </a>
+              )}
+              {profile?.twitterUrl && (
+                <a
+                  href={profile.twitterUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-white flex items-center gap-2 transition-colors"
+                >
+                  <span>Twitter / X</span>
+                </a>
+              )}
               <a
-                href="https://github.com"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-white flex items-center gap-2 transition-colors"
-              >
-                <span>GitHub</span>
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-white flex items-center gap-2 transition-colors"
-              >
-                <span>LinkedIn</span>
-              </a>
-              <a
-                href="https://x.com"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-white flex items-center gap-2 transition-colors"
-              >
-                <span>Twitter / X</span>
-              </a>
-              <a
-                href="mailto:contact@sendiko.dev"
+                href={`mailto:${profile?.email || 'contact@sendiko.dev'}`}
                 className="hover:text-white flex items-center gap-2 transition-colors text-[#39b8fd]"
               >
-                <span>contact@sendiko.dev</span>
+                <span>{profile?.email || 'contact@sendiko.dev'}</span>
               </a>
             </div>
           </div>
@@ -96,7 +117,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-          <p>© {new Date().getFullYear()} Rizky Sendiko. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {profile?.name || 'Rizky Sendiko'}. All rights reserved.</p>
           <div className="flex items-center gap-4 font-mono">
             <span>Built with Next.js 16 & Prisma</span>
             <span>•</span>
