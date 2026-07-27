@@ -53,9 +53,14 @@ export default function AdminExperiencesPage() {
     fetchExperiences();
   }, []);
 
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
   const openCreateForm = () => {
     setFormData(initialForm);
     setEditingId(null);
+    setFormError(null);
+    setSubmitting(false);
     setIsEditing(true);
   };
 
@@ -72,6 +77,8 @@ export default function AdminExperiencesPage() {
       achievementsText: Array.isArray(exp.achievements) ? exp.achievements.join('\n') : '',
     });
     setEditingId(exp.id);
+    setFormError(null);
+    setSubmitting(false);
     setIsEditing(true);
   };
 
@@ -87,6 +94,9 @@ export default function AdminExperiencesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    setFormError(null);
+
     const achievements = formData.achievementsText
       .split('\n')
       .map((line) => line.trim())
@@ -98,23 +108,31 @@ export default function AdminExperiencesPage() {
     };
 
     try {
-      if (editingId) {
-        await fetch(`/api/experiences/${editingId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-      } else {
-        await fetch('/api/experiences', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
+      const res = editingId
+        ? await fetch(`/api/experiences/${editingId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+        : await fetch('/api/experiences', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.error || json.message || 'Failed to save experience record.');
       }
+
       setIsEditing(false);
       fetchExperiences();
     } catch (err) {
       console.error('Failed to save experience:', err);
+      setFormError(err instanceof Error ? err.message : 'Failed to save experience record.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -144,6 +162,19 @@ export default function AdminExperiencesPage() {
           <h3 className="font-bold text-lg text-[#091426] border-b border-gray-200 pb-3">
             {editingId ? 'Edit Work Experience' : 'Add Work Experience'}
           </h3>
+
+          {formError && (
+            <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs font-mono font-bold flex items-center justify-between">
+              <span>⚠️ {formError}</span>
+              <button
+                type="button"
+                onClick={() => setFormError(null)}
+                className="text-rose-600 hover:text-rose-900 font-bold ml-2 text-sm"
+              >
+                ×
+              </button>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
@@ -231,14 +262,16 @@ export default function AdminExperiencesPage() {
           <div className="flex gap-4">
             <button
               type="submit"
-              className="px-6 py-2 bg-[#091426] text-white rounded text-xs font-mono font-bold"
+              disabled={submitting}
+              className="px-6 py-2 bg-[#091426] hover:bg-[#006591] text-white rounded text-xs font-mono font-bold disabled:opacity-50 transition-colors"
             >
-              {editingId ? 'Update Experience' : 'Save Experience'}
+              {submitting ? 'Saving Experience...' : editingId ? 'Update Experience' : 'Save Experience'}
             </button>
             <button
               type="button"
+              disabled={submitting}
               onClick={() => setIsEditing(false)}
-              className="px-6 py-2 bg-gray-100 text-gray-700 rounded text-xs font-mono"
+              className="px-6 py-2 bg-gray-100 text-gray-700 rounded text-xs font-mono disabled:opacity-50"
             >
               Cancel
             </button>

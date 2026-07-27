@@ -46,8 +46,9 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ data: newExperience, message: 'Experience added successfully' }, { status: 201 });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error creating experience:', error);
-    return NextResponse.json({ error: 'Failed to add experience' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Failed to add experience';
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }

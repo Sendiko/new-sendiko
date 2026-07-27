@@ -30,9 +30,10 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     });
 
     return NextResponse.json({ data: updated, message: 'Experience updated successfully' });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error updating experience:', error);
-    return NextResponse.json({ error: 'Failed to update experience' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Failed to update experience';
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
 
