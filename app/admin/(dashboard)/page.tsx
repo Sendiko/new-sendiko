@@ -18,7 +18,7 @@ export default async function AdminDashboardOverview() {
 
   return (
     <div className="space-y-8">
-      
+
       {/* Header Banner */}
       <div className="bg-linear-to-r from-[#091426] to-[#006591] text-white p-8 rounded-xl shadow-md space-y-2">
         <h2 className="text-2xl font-bold font-sans">Welcome to your Portfolio CMS</h2>
@@ -29,7 +29,7 @@ export default async function AdminDashboardOverview() {
 
       {/* Stat Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        
+
         <Link href="/admin/projects" className="bg-white p-6 rounded-xl border border-[#e0e3e5] shadow-xs hover:border-[#006591] transition-all group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono font-bold text-gray-500 uppercase">Projects</span>
@@ -80,7 +80,7 @@ export default async function AdminDashboardOverview() {
 
       {/* Quick Shortcuts & Inbox Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+
         {/* Quick Management Shortcuts */}
         <div className="lg:col-span-6 bg-white p-6 rounded-xl border border-[#e0e3e5] shadow-xs space-y-4">
           <h3 className="font-bold text-[#091426] text-lg font-sans border-b border-gray-100 pb-3">

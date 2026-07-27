@@ -46,10 +46,6 @@ export default async function HomePage() {
 
             {/* Hero Left Intro */}
             <div className="lg:col-span-8 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#006591]/30 border border-[#39b8fd]/30 text-[#39b8fd] text-xs font-mono">
-                <span className="w-2 h-2 rounded-full bg-[#39b8fd] animate-ping" />
-                Mobile Precision Architecture
-              </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-sans tracking-tight leading-tight">
                 {profile?.headline || 'Senior Mobile Software Engineer'}

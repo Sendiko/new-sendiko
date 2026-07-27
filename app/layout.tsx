@@ -25,7 +25,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rizky Sendiko — Senior Mobile Engineer",
+  title: "Rizky Sendiko — Mobile Engineer Associate",
   description: "Portfolio & Case Studies of Rizky Sendiko, Senior Mobile Software Engineer specializing in iOS, Android, SwiftUI, Jetpack Compose, and Clean Architecture.",
 };
 
