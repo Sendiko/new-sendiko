@@ -149,8 +149,8 @@ model WorkExperience {
   startDate      DateTime
   endDate        DateTime?
   isCurrent      Boolean  @default(false)
-  description    @db.Text
-  achievements   @db.Text   // JSON formatted array of achievements
+  description    String   @db.Text
+  achievements   String   @db.Text   // JSON formatted array of achievements
   order          Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
