@@ -346,6 +346,34 @@ export default function AdminProjectsPage() {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="block text-xs font-mono text-gray-700">Downloads Count</label>
+              <input
+                type="number"
+                min={0}
+                value={formData.downloadsCount}
+                onChange={(e) => setFormData({ ...formData, downloadsCount: parseInt(e.target.value) || 0 })}
+                placeholder="e.g. 10000"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-hidden"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-mono text-gray-700">Rating (0.0 - 5.0)</label>
+              <input
+                type="number"
+                step="0.1"
+                min={0}
+                max={5}
+                value={formData.rating}
+                onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) || 0 })}
+                placeholder="e.g. 4.9"
+                className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-hidden"
+              />
+            </div>
+          </div>
+
           <div className="p-4 bg-amber-50/50 rounded-lg border border-amber-200/80 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center space-x-3">
               <button
