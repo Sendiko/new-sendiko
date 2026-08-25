@@ -29,7 +29,7 @@ export default async function HomePage() {
   });
 
   const experiences = await prisma.workExperience.findMany({
-    orderBy: { order: 'asc' },
+    orderBy: { startDate: 'desc' },
   });
 
   const educations = await prisma.education.findMany({

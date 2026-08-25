@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 export async function GET() {
   try {
     const experiences = await prisma.workExperience.findMany({
-      orderBy: { order: 'asc' },
+      orderBy: { startDate: 'desc' },
     });
 
     const formatted = experiences.map((exp) => ({

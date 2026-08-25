@@ -285,9 +285,13 @@ export default function AdminExperiencesPage() {
             experiences.map((exp) => (
               <div key={exp.id} className="bg-white p-6 rounded-xl border border-[#e0e3e5] shadow-xs flex justify-between items-start gap-4">
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="font-bold text-gray-900 font-sans">{exp.role}</span>
                     <span className="text-xs font-mono text-[#006591] font-semibold">@ {exp.company}</span>
+                    <span className="text-[11px] font-mono text-gray-500 bg-gray-50 px-2 py-0.5 rounded border border-gray-200 ml-auto sm:ml-0">
+                      {new Date(exp.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - {' '}
+                      {exp.isCurrent ? 'Present' : exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'N/A'}
+                    </span>
                   </div>
                   <p className="text-xs text-gray-600 font-sans">{exp.description}</p>
                 </div>
