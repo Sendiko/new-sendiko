@@ -48,31 +48,31 @@ export default function ProjectsPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
       
       {/* Header Banner */}
       <div className="space-y-4 max-w-3xl">
-        <span className="text-xs font-mono font-bold text-[#006591] uppercase tracking-wider">
+        <span className="text-xs font-mono font-bold text-sky-400 uppercase tracking-widest">
           Mobile Portfolio & Case Studies
         </span>
-        <h1 className="text-4xl font-bold font-sans text-[#091426]">
+        <h1 className="text-4xl sm:text-5xl font-extrabold font-sans text-white tracking-tight">
           Production Engineering Projects
         </h1>
-        <p className="text-gray-600 text-base leading-relaxed">
+        <p className="text-slate-400 text-base sm:text-lg leading-relaxed">
           Detailed breakdown of architecture, technical feature implementations, and metric outcomes for iOS, Android, and Cross-Platform applications.
         </p>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-4">
+      <div className="flex flex-wrap gap-2.5 border-b border-white/[0.08] pb-5">
         {filters.map((f) => (
           <button
             key={f.value}
             onClick={() => setActiveFilter(f.value as typeof activeFilter)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all font-mono ${
+            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all font-mono tracking-wide cursor-pointer ${
               activeFilter === f.value
-                ? 'bg-[#091426] text-white shadow-xs'
-                : 'bg-white text-gray-600 border border-[#e0e3e5] hover:bg-gray-100 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold shadow-[0_0_20px_rgba(56,189,248,0.25)] border border-sky-400/50'
+                : 'bg-[#11141a]/80 text-slate-300 border border-white/[0.08] hover:bg-white/[0.06] hover:text-white hover:border-white/20'
             }`}
           >
             {f.label}
@@ -84,16 +84,16 @@ export default function ProjectsPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="bg-white rounded-xl border border-[#e0e3e5] p-6 h-80 animate-pulse space-y-4">
-              <div className="h-40 bg-gray-200 rounded-lg" />
-              <div className="h-6 bg-gray-200 rounded-md w-3/4" />
-              <div className="h-4 bg-gray-200 rounded-md w-full" />
+            <div key={n} className="bg-[#11141a]/80 rounded-2xl border border-white/[0.08] p-6 h-80 animate-pulse space-y-4">
+              <div className="h-40 bg-white/[0.05] rounded-xl" />
+              <div className="h-6 bg-white/[0.05] rounded-md w-3/4" />
+              <div className="h-4 bg-white/[0.05] rounded-md w-full" />
             </div>
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-[#e0e3e5] space-y-3">
-          <p className="text-gray-500 font-mono text-sm">No projects found for the selected filter.</p>
+        <div className="text-center py-20 bg-[#11141a]/80 rounded-2xl border border-white/[0.08] space-y-3">
+          <p className="text-slate-400 font-mono text-sm">No projects found for the selected platform filter.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

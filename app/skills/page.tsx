@@ -26,36 +26,36 @@ export default async function SkillsPage() {
       
       {/* 1. Header */}
       <div className="space-y-4 max-w-3xl">
-        <span className="text-xs font-mono font-bold text-[#006591] uppercase tracking-wider">
+        <span className="text-xs font-mono font-bold text-sky-400 uppercase tracking-widest">
           Capabilities & Background
         </span>
-        <h1 className="text-4xl font-bold font-sans text-[#091426]">
+        <h1 className="text-4xl sm:text-5xl font-extrabold font-sans text-white tracking-tight">
           Skills, Experience & Education
         </h1>
-        <p className="text-gray-600 text-base leading-relaxed">
+        <p className="text-slate-400 text-base sm:text-lg leading-relaxed">
           Comprehensive inventory of mobile engineering languages, frameworks, reactive architecture, CI/CD tools, career history, and academic foundation.
         </p>
       </div>
 
       {/* 2. Skills Grid by Category */}
       <section className="space-y-10">
-        <h2 className="text-2xl font-bold font-sans text-[#091426] border-b border-gray-200 pb-3">
+        <h2 className="text-2xl font-bold font-sans text-white border-b border-white/[0.08] pb-4">
           Technology Stack & Core Skills
         </h2>
 
         <div className="space-y-8">
           {categories.map((cat) => (
-            <div key={cat.id} className="space-y-4">
+            <div key={cat.id} className="space-y-4 bg-[#11141a]/60 backdrop-blur-md p-6 rounded-2xl border border-white/[0.06]">
               <div className="flex items-center gap-3">
-                <h3 className="text-xl font-bold font-sans text-[#091426]">
+                <h3 className="text-xl font-bold font-sans text-white">
                   {cat.name}
                 </h3>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#006591]/10 text-[#006591] font-mono text-xs font-semibold">
+                <span className="px-2.5 py-0.5 rounded-full bg-white/[0.04] text-sky-400 border border-white/10 font-mono text-xs font-semibold">
                   {cat.skills.length} Technologies
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
                 {cat.skills.map((skill) => (
                   <SkillCard key={skill.id} skill={skill} />
                 ))}
@@ -67,48 +67,48 @@ export default async function SkillsPage() {
 
       {/* 3. Full Career Experience Timeline */}
       <section className="space-y-10">
-        <h2 className="text-2xl font-bold font-sans text-[#091426] border-b border-gray-200 pb-3">
+        <h2 className="text-2xl font-bold font-sans text-white border-b border-white/[0.08] pb-4">
           Professional Work Experience
         </h2>
 
-        <div className="relative border-l-2 border-[#091426]/20 ml-4 pl-6 sm:pl-8 space-y-12">
+        <div className="relative border-l-2 border-white/10 ml-4 pl-6 sm:pl-8 space-y-12">
           {experiences.map((exp) => {
             const achievements: string[] = JSON.parse(exp.achievements || '[]');
             return (
               <div key={exp.id} className="relative group">
                 {/* Timeline Dot */}
-                <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-4 h-4 rounded-full bg-[#006591] border-4 border-white shadow-xs group-hover:scale-125 transition-transform" />
+                <div className="absolute -left-[31px] sm:-left-[39px] top-2 w-4 h-4 rounded-full bg-sky-400 border-4 border-[#08090a] shadow-[0_0_12px_rgba(56,189,248,0.8)] group-hover:scale-125 transition-transform" />
 
-                <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#e0e3e5] shadow-xs space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-4">
+                <div className="bg-[#11141a]/85 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-white/[0.08] shadow-lg space-y-4 hover:border-white/15 transition-all">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.06] pb-4">
                     <div>
-                      <span className="text-xs font-mono text-[#006591] font-bold uppercase tracking-wider block">
+                      <span className="text-xs font-mono text-sky-400 font-semibold uppercase tracking-wider block">
                         {exp.company}
                       </span>
-                      <h3 className="text-xl font-bold text-[#091426] font-sans">
+                      <h3 className="text-xl font-bold text-white font-sans mt-0.5">
                         {exp.role}
                       </h3>
                     </div>
 
-                    <div className="text-xs font-mono text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 self-start sm:self-auto">
+                    <div className="text-xs font-mono text-slate-400 bg-black/40 px-3.5 py-1.5 rounded-xl border border-white/[0.08] self-start sm:self-auto">
                       {new Date(exp.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - {' '}
                       {exp.isCurrent ? 'Present' : exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'N/A'}
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-700 font-sans leading-relaxed">
+                  <p className="text-sm text-slate-300 font-sans leading-relaxed">
                     {exp.description}
                   </p>
 
                   {achievements.length > 0 && (
                     <div className="space-y-2 pt-2">
-                      <h4 className="text-xs font-mono font-bold text-gray-500 uppercase tracking-wide">
+                      <h4 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wide">
                         Key Accomplishments:
                       </h4>
-                      <ul className="space-y-1.5 text-sm text-gray-600 font-sans">
+                      <ul className="space-y-1.5 text-sm text-slate-300 font-sans">
                         {achievements.map((ach, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="text-[#006591] font-bold">•</span>
+                          <li key={idx} className="flex items-start gap-2.5">
+                            <span className="text-sky-400 font-bold">•</span>
                             <span>{ach}</span>
                           </li>
                         ))}
@@ -125,36 +125,36 @@ export default async function SkillsPage() {
       {/* 4. Academic & Education Background */}
       {educations.length > 0 && (
         <section className="space-y-10">
-          <h2 className="text-2xl font-bold font-sans text-[#091426] border-b border-gray-200 pb-3">
+          <h2 className="text-2xl font-bold font-sans text-white border-b border-white/[0.08] pb-4">
             Education & Academic Foundation
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {educations.map((edu) => (
-              <div key={edu.id} className="bg-white p-6 sm:p-8 rounded-xl border border-[#e0e3e5] shadow-xs space-y-3">
-                <div className="flex justify-between items-start">
+              <div key={edu.id} className="bg-[#11141a]/85 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-white/[0.08] shadow-lg space-y-3 hover:border-white/15 transition-all">
+                <div className="flex justify-between items-start gap-4">
                   <div>
-                    <span className="text-xs font-mono text-[#006591] font-bold uppercase tracking-wider block">
+                    <span className="text-xs font-mono text-sky-400 font-semibold uppercase tracking-wider block">
                       {edu.institution}
                     </span>
-                    <h3 className="text-lg font-bold font-sans text-[#091426]">
+                    <h3 className="text-lg font-bold font-sans text-white mt-0.5">
                       {edu.degree} in {edu.fieldOfStudy}
                     </h3>
                   </div>
                   {edu.grade && (
-                    <span className="px-2.5 py-1 rounded bg-[#00a291]/10 text-[#00a291] font-mono text-xs font-semibold">
+                    <span className="px-3 py-1 rounded-full bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 font-mono text-xs font-semibold shrink-0">
                       {edu.grade}
                     </span>
                   )}
                 </div>
 
-                <div className="text-xs font-mono text-gray-400">
+                <div className="text-xs font-mono text-slate-400">
                   {new Date(edu.startDate).getFullYear()} - {edu.endDate ? new Date(edu.endDate).getFullYear() : 'Present'}
                   {edu.location && ` • ${edu.location}`}
                 </div>
 
                 {edu.description && (
-                  <p className="text-sm text-gray-600 leading-relaxed font-sans pt-1">
+                  <p className="text-sm text-slate-300 leading-relaxed font-sans pt-1">
                     {edu.description}
                   </p>
                 )}

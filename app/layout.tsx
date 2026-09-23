@@ -39,7 +39,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#f7f9fb] text-[#191c1e]">
+      <body className="min-h-full flex flex-col bg-[#08090a] text-[#f8fafc] selection:bg-sky-500/30 selection:text-sky-200 antialiased">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
