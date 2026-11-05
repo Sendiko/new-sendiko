@@ -77,6 +77,34 @@ Open [http://localhost:3000](http://localhost:3000). To access the admin panel, 
 
 ---
 
+## 🐳 Docker Compose Setup
+
+Docker Compose runs only the Next.js application with SQLite. Configure it to use your hosted MinIO instance before starting:
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+Set `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, and `MINIO_SECRET_KEY` in `.env` to match your hosted MinIO deployment. The application is available at [http://localhost:3000](http://localhost:3000), and the SQLite database is stored in a named Docker volume. Uploaded files remain in your hosted MinIO instance.
+
+The SQLite schema is created automatically when the app starts. Seed the sample portfolio data once:
+
+```bash
+docker compose exec app npx prisma db push
+docker compose exec app npm run db:seed
+```
+
+Stop the services without removing persistent data:
+
+```bash
+docker compose down
+```
+
+To remove the local database as well, use `docker compose down -v`. This does not delete anything from hosted MinIO.
+
+---
+
 ## 🐧 Linux Server Deployment Guide (Ubuntu / Debian / RHEL)
 
 Follow these steps to deploy the application to a production Linux server (e.g. AWS EC2, DigitalOcean Droplet, Linode, or Hetzner).

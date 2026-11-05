@@ -1,4 +1,4 @@
-import * as Minio from 'minio';
+import { Client } from 'minio';
 
 const endpoint = (process.env.MINIO_ENDPOINT || 'localhost')
   .replace(/^https?:\/\//, '')
@@ -12,11 +12,11 @@ const secretKey = process.env.MINIO_SECRET_KEY || 'ChangeMeToSomethingSecure123'
 export const BUCKET_NAME = process.env.MINIO_BUCKET_NAME || 'sendiko-portfolio';
 export const PUBLIC_URL_BASE = process.env.MINIO_PUBLIC_URL || '/api/storage/file';
 
-let minioClient: Minio.Client | null = null;
+let minioClient: Client | null = null;
 
-export function getMinioClient(): Minio.Client {
+export function getMinioClient(): Client {
   if (!minioClient) {
-    minioClient = new Minio.Client({
+    minioClient = new Client({
       endPoint: endpoint,
       port: port,
       useSSL: useSSL,
