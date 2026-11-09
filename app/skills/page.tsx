@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
 import SkillCard from '@/components/SkillCard';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function SkillsPage() {
   const categories = await prisma.skillCategory.findMany({
