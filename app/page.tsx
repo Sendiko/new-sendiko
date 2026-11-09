@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 import ProjectCard from '@/components/ProjectCard';
 import SkillCard from '@/components/SkillCard';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   const profile = await prisma.profile.findFirst();
