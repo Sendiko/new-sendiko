@@ -53,11 +53,12 @@ cp .env.example .env
 ```
 Inside `.env`:
 ```env
-# Local SQLite Database
-DATABASE_URL="file:./dev.db"
+# MySQL Database
+DATABASE_URL="mysql://user:password@host:3306/new_sendiko"
 
 # Admin Console Passcode
 ADMIN_PASSWORD="admin123"
+APP_PORT="3000"
 ```
 
 ### 4. Database Setup & Seeding
@@ -79,27 +80,20 @@ Open [http://localhost:3000](http://localhost:3000). To access the admin panel, 
 
 ## 🐳 Docker Compose Setup
 
-Docker Compose runs only the Next.js application with SQLite. Configure it to use your hosted MinIO instance before starting:
+Docker Compose runs the Next.js application against the MySQL database and hosted MinIO instance configured in `.env`:
 
 ```bash
 cp .env.example .env
 docker compose up --build -d
 ```
 
-Set `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, and `MINIO_SECRET_KEY` in `.env` to match your hosted MinIO deployment. The application is available at [http://localhost:3000](http://localhost:3000), and the SQLite database is stored in a named Docker volume. Uploaded files remain in your hosted MinIO instance.
+Set `DATABASE_URL`, `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, and `MINIO_SECRET_KEY` in `.env` to match your infrastructure. The application is available at [http://localhost:3000](http://localhost:3000), or the host port configured by `APP_PORT`. Uploaded files remain in your hosted MinIO instance.
 
-The SQLite schema is created automatically when the app starts. Seed the sample portfolio data once:
+The MySQL schema is synchronized automatically when the app starts. Seed the sample portfolio data once:
 
 ```bash
-docker compose exec app bunx --bun prisma db push
 docker compose exec app bun run db:seed
 ```
-
-This Compose configuration is SQLite-only. Do not change `provider = "sqlite"` in
-`prisma/schema.prisma` to `mysql` or `postgresql` while using it: the Compose
-file supplies a `file:/app/data/portfolio.db` URL, which is not valid for those
-providers. Use the separate Linux deployment flow below when deploying with an
-external database.
 
 Stop the services without removing persistent data:
 
@@ -163,22 +157,8 @@ Create production `.env`:
 nano .env
 ```
 
-#### For SQLite Database (Simpler zero-config production):
-```env
-DATABASE_URL="file:./prod.db"
-ADMIN_PASSWORD="YourStrongSecurePasscodeHere"
-NODE_ENV="production"
-```
-
 #### For MySQL Database:
-1. Update `prisma/schema.prisma` datasource provider:
-   ```prisma
-   datasource db {
-     provider = "mysql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-2. Set `.env`:
+Set `.env`:
    ```env
    DATABASE_URL="mysql://db_user:db_password@localhost:3306/portfolio_db"
    ADMIN_PASSWORD="YourStrongSecurePasscodeHere"

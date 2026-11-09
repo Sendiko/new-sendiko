@@ -12,7 +12,7 @@ RUN bun install --frozen-lockfile
 FROM oven/bun:1 AS builder
 
 WORKDIR /app
-ENV DATABASE_URL=file:/app/data/portfolio.db
+ENV DATABASE_URL=mysql://build:build@localhost:3306/build
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openssl \
@@ -23,8 +23,6 @@ COPY package.json bun.lock ./
 COPY prisma ./prisma
 COPY . .
 
-RUN mkdir -p /app/data
-RUN bunx --bun prisma db push --skip-generate
 RUN bunx --bun prisma generate
 RUN bun run build
 

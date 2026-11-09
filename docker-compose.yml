@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     command: sh -c "bunx --bun prisma db push && bun run start"
     environment:
-      DATABASE_URL: file:/app/data/portfolio.db
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
       NODE_ENV: production
       MINIO_ENDPOINT: ${MINIO_ENDPOINT:?MINIO_ENDPOINT is required}
@@ -17,9 +17,4 @@ services:
       MINIO_PUBLIC_URL: /api/storage/file
     ports:
       - "${APP_PORT:-3000}:3000"
-    volumes:
-      - database:/app/data
     restart: unless-stopped
-
-volumes:
-  database:
