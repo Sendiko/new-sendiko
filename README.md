@@ -25,6 +25,7 @@ A high-performance, responsive portfolio web application and Content Management 
 - **Database & ORM**: Prisma ORM (v6) with SQLite (Dev) & MySQL / PostgreSQL (Prod)
 - **Styling**: Tailwind CSS v4 with custom Indigo Precision tokens
 - **Typography**: Google Fonts (`Geist`, `Inter`, `JetBrains Mono`)
+- **Runtime**: Bun
 - **Process Manager**: PM2
 - **Reverse Proxy**: Nginx + Let's Encrypt SSL (Certbot)
 
@@ -33,8 +34,7 @@ A high-performance, responsive portfolio web application and Content Management 
 ## 🛠️ Local Development Setup
 
 ### 1. Prerequisites
-- Node.js 20.x or higher
-- npm 10.x or higher
+- Bun 1.x or higher
 
 ### 2. Installation
 ```bash
@@ -43,7 +43,7 @@ git clone <repository-url>
 cd new-sendiko
 
 # Install dependencies
-npm install
+bun install
 ```
 
 ### 3. Environment Configuration
@@ -63,20 +63,21 @@ MYSQL_ROOT_PASSWORD="your-root-password"
 
 # Admin Console Passcode
 ADMIN_PASSWORD="admin123"
+APP_PORT="3000"
 ```
 
 ### 4. Database Setup & Seeding
 ```bash
 # Synchronize database schema
-npx prisma db push
+bunx --bun prisma db push
 
 # Seed initial portfolio data
-npm run db:seed
+bun run db:seed
 ```
 
 ### 5. Run Local Server
 ```bash
-npm run dev
+bun run dev
 ```
 Open [http://localhost:3000](http://localhost:3000). To access the admin panel, visit [http://localhost:3000/admin](http://localhost:3000/admin) (Default Passcode: `admin123`).
 
@@ -109,6 +110,33 @@ To remove the MySQL data as well, use `docker compose down -v`. This does not de
 
 ---
 
+## 🐳 Docker Compose Setup
+
+Docker Compose runs the Next.js application against the MySQL database and hosted MinIO instance configured in `.env`:
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+Set `DATABASE_URL`, `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, and `MINIO_SECRET_KEY` in `.env` to match your infrastructure. The application is available at [http://localhost:3000](http://localhost:3000), or the host port configured by `APP_PORT`. Uploaded files remain in your hosted MinIO instance.
+
+The MySQL schema is synchronized automatically when the app starts. Seed the sample portfolio data once:
+
+```bash
+docker compose exec app bun run db:seed
+```
+
+Stop the services without removing persistent data:
+
+```bash
+docker compose down
+```
+
+To remove the local database as well, use `docker compose down -v`. This does not delete anything from hosted MinIO.
+
+---
+
 ## 🐧 Linux Server Deployment Guide (Ubuntu / Debian / RHEL)
 
 Follow these steps to deploy the application to a production Linux server (e.g. AWS EC2, DigitalOcean Droplet, Linode, or Hetzner).
@@ -117,26 +145,26 @@ Follow these steps to deploy the application to a production Linux server (e.g. 
 
 ### Step 1: System Dependencies Installation
 
-Log in to your Linux server via SSH and install Node.js 20 LTS, Nginx, PM2, and Certbot.
+Log in to your Linux server via SSH and install Bun, Nginx, PM2, and Certbot.
 
 #### On Ubuntu / Debian:
 ```bash
 # Update package list
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js 20 LTS
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs nginx git certbot python3-certbot-nginx
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+sudo apt install -y nginx git certbot python3-certbot-nginx
 
 # Install PM2 Globally
-sudo npm install -g pm2
+sudo bun add --global pm2
 ```
 
 #### On Fedora / RHEL / AlmaLinux:
 ```bash
 sudo dnf update -y
-sudo dnf install -y nodejs nginx git certbot python3-certbot-nginx
-sudo npm install -g pm2
+sudo dnf install -y nginx git certbot python3-certbot-nginx
+sudo bun add --global pm2
 ```
 
 ---
@@ -153,7 +181,7 @@ sudo chown -R $USER:$USER /var/www/new-sendiko
 cd /var/www/new-sendiko
 
 # Install production dependencies
-npm install
+bun install
 ```
 
 Create production `.env`:
@@ -161,22 +189,8 @@ Create production `.env`:
 nano .env
 ```
 
-#### For SQLite Database (Simpler zero-config production):
-```env
-DATABASE_URL="file:./prod.db"
-ADMIN_PASSWORD="YourStrongSecurePasscodeHere"
-NODE_ENV="production"
-```
-
 #### For MySQL Database:
-1. Update `prisma/schema.prisma` datasource provider:
-   ```prisma
-   datasource db {
-     provider = "mysql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-2. Set `.env`:
+Set `.env`:
    ```env
    DATABASE_URL="mysql://db_user:db_password@localhost:3306/portfolio_db"
    ADMIN_PASSWORD="YourStrongSecurePasscodeHere"
@@ -189,10 +203,10 @@ NODE_ENV="production"
 
 ```bash
 # Push schema to SQLite/MySQL database
-npx prisma db push
+bunx --bun prisma db push
 
 # Seed initial database records
-npm run db:seed
+bun run db:seed
 ```
 
 ---
@@ -200,7 +214,7 @@ npm run db:seed
 ### Step 4: Build Next.js Application
 
 ```bash
-npm run build
+bun run build
 ```
 
 ---
@@ -211,7 +225,7 @@ Start the production server using PM2 so it stays running in the background and 
 
 ```bash
 # Start Next.js server on port 3000
-pm2 start npm --name "sendiko-portfolio" -- run start
+pm2 start bun --name "sendiko-portfolio" -- run start
 
 # Save PM2 process list
 pm2 save
@@ -275,9 +289,9 @@ sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 | **Check App Status** | `pm2 status` |
 | **View App Logs** | `pm2 logs sendiko-portfolio` |
 | **Restart Application** | `pm2 restart sendiko-portfolio` |
-| **Update Code & Redeploy** | `git pull && npm install && npx prisma db push && npm run build && pm2 restart sendiko-portfolio` |
-| **Re-seed Database** | `npm run db:seed` |
-| **Database Studio UI** | `npx prisma studio --port 5555` |
+| **Update Code & Redeploy** | `git pull && bun install && bunx --bun prisma db push && bun run build && pm2 restart sendiko-portfolio` |
+| **Re-seed Database** | `bun run db:seed` |
+| **Database Studio UI** | `bunx --bun prisma studio --port 5555` |
 
 ---
 
