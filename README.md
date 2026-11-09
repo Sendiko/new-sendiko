@@ -25,6 +25,7 @@ A high-performance, responsive portfolio web application and Content Management 
 - **Database & ORM**: Prisma ORM (v6) with SQLite (Dev) & MySQL / PostgreSQL (Prod)
 - **Styling**: Tailwind CSS v4 with custom Indigo Precision tokens
 - **Typography**: Google Fonts (`Geist`, `Inter`, `JetBrains Mono`)
+- **Runtime**: Bun
 - **Process Manager**: PM2
 - **Reverse Proxy**: Nginx + Let's Encrypt SSL (Certbot)
 
@@ -33,8 +34,7 @@ A high-performance, responsive portfolio web application and Content Management 
 ## 🛠️ Local Development Setup
 
 ### 1. Prerequisites
-- Node.js 20.x or higher
-- npm 10.x or higher
+- Bun 1.x or higher
 
 ### 2. Installation
 ```bash
@@ -43,7 +43,7 @@ git clone <repository-url>
 cd new-sendiko
 
 # Install dependencies
-npm install
+bun install
 ```
 
 ### 3. Environment Configuration
@@ -63,15 +63,15 @@ ADMIN_PASSWORD="admin123"
 ### 4. Database Setup & Seeding
 ```bash
 # Synchronize database schema
-npx prisma db push
+bunx --bun prisma db push
 
 # Seed initial portfolio data
-npm run db:seed
+bun run db:seed
 ```
 
 ### 5. Run Local Server
 ```bash
-npm run dev
+bun run dev
 ```
 Open [http://localhost:3000](http://localhost:3000). To access the admin panel, visit [http://localhost:3000/admin](http://localhost:3000/admin) (Default Passcode: `admin123`).
 
@@ -91,9 +91,15 @@ Set `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, and `MI
 The SQLite schema is created automatically when the app starts. Seed the sample portfolio data once:
 
 ```bash
-docker compose exec app npx prisma db push
-docker compose exec app npm run db:seed
+docker compose exec app bunx --bun prisma db push
+docker compose exec app bun run db:seed
 ```
+
+This Compose configuration is SQLite-only. Do not change `provider = "sqlite"` in
+`prisma/schema.prisma` to `mysql` or `postgresql` while using it: the Compose
+file supplies a `file:/app/data/portfolio.db` URL, which is not valid for those
+providers. Use the separate Linux deployment flow below when deploying with an
+external database.
 
 Stop the services without removing persistent data:
 
@@ -113,26 +119,26 @@ Follow these steps to deploy the application to a production Linux server (e.g. 
 
 ### Step 1: System Dependencies Installation
 
-Log in to your Linux server via SSH and install Node.js 20 LTS, Nginx, PM2, and Certbot.
+Log in to your Linux server via SSH and install Bun, Nginx, PM2, and Certbot.
 
 #### On Ubuntu / Debian:
 ```bash
 # Update package list
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js 20 LTS
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs nginx git certbot python3-certbot-nginx
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+sudo apt install -y nginx git certbot python3-certbot-nginx
 
 # Install PM2 Globally
-sudo npm install -g pm2
+sudo bun add --global pm2
 ```
 
 #### On Fedora / RHEL / AlmaLinux:
 ```bash
 sudo dnf update -y
-sudo dnf install -y nodejs nginx git certbot python3-certbot-nginx
-sudo npm install -g pm2
+sudo dnf install -y nginx git certbot python3-certbot-nginx
+sudo bun add --global pm2
 ```
 
 ---
@@ -149,7 +155,7 @@ sudo chown -R $USER:$USER /var/www/new-sendiko
 cd /var/www/new-sendiko
 
 # Install production dependencies
-npm install
+bun install
 ```
 
 Create production `.env`:
@@ -185,10 +191,10 @@ NODE_ENV="production"
 
 ```bash
 # Push schema to SQLite/MySQL database
-npx prisma db push
+bunx --bun prisma db push
 
 # Seed initial database records
-npm run db:seed
+bun run db:seed
 ```
 
 ---
@@ -196,7 +202,7 @@ npm run db:seed
 ### Step 4: Build Next.js Application
 
 ```bash
-npm run build
+bun run build
 ```
 
 ---
@@ -207,7 +213,7 @@ Start the production server using PM2 so it stays running in the background and 
 
 ```bash
 # Start Next.js server on port 3000
-pm2 start npm --name "sendiko-portfolio" -- run start
+pm2 start bun --name "sendiko-portfolio" -- run start
 
 # Save PM2 process list
 pm2 save
@@ -271,9 +277,9 @@ sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 | **Check App Status** | `pm2 status` |
 | **View App Logs** | `pm2 logs sendiko-portfolio` |
 | **Restart Application** | `pm2 restart sendiko-portfolio` |
-| **Update Code & Redeploy** | `git pull && npm install && npx prisma db push && npm run build && pm2 restart sendiko-portfolio` |
-| **Re-seed Database** | `npm run db:seed` |
-| **Database Studio UI** | `npx prisma studio --port 5555` |
+| **Update Code & Redeploy** | `git pull && bun install && bunx --bun prisma db push && bun run build && pm2 restart sendiko-portfolio` |
+| **Re-seed Database** | `bun run db:seed` |
+| **Database Studio UI** | `bunx --bun prisma studio --port 5555` |
 
 ---
 

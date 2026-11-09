@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "db:seed": "prisma db seed"
+    "dev": "bunx --bun next dev",
+    "build": "bunx --bun next build",
+    "start": "bunx --bun next start",
+    "lint": "bunx --bun eslint",
+    "db:seed": "bunx --bun prisma db seed"
   },
   "prisma": {
-    "seed": "npx tsx prisma/seed.ts"
+    "seed": "bun prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

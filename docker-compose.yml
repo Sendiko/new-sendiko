@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: sh -c "npx prisma db push && npm start"
+    command: sh -c "bunx --bun prisma db push && bun run start"
     environment:
       DATABASE_URL: file:/app/data/portfolio.db
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
