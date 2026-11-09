@@ -53,8 +53,13 @@ cp .env.example .env
 ```
 Inside `.env`:
 ```env
-# Local SQLite Database
-DATABASE_URL="file:./dev.db"
+# MySQL Database
+DATABASE_URL="mysql://user:password@host:3306/new_sendiko"
+MYSQL_DATABASE="new_sendiko"
+MYSQL_USER="sendiko"
+MYSQL_PASSWORD="your-mysql-password"
+MYSQL_PASSWORD_URLENCODED="your-url-encoded-mysql-password"
+MYSQL_ROOT_PASSWORD="your-root-password"
 
 # Admin Console Passcode
 ADMIN_PASSWORD="admin123"
@@ -74,6 +79,33 @@ npm run db:seed
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000). To access the admin panel, visit [http://localhost:3000/admin](http://localhost:3000/admin) (Default Passcode: `admin123`).
+
+---
+
+## 🐳 Docker Compose Setup
+
+Docker Compose starts a MySQL 8 container and the Next.js application. The app connects to MySQL through the internal `mysql` hostname, while uploaded files use the hosted MinIO instance configured in `.env`:
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+Set `MYSQL_PASSWORD`, `MYSQL_PASSWORD_URLENCODED`, `MYSQL_ROOT_PASSWORD`, `MINIO_ENDPOINT`, `MINIO_PORT`, `MINIO_USE_SSL`, `MINIO_ACCESS_KEY`, and `MINIO_SECRET_KEY` in `.env`. The application is available at [http://localhost:3000](http://localhost:3000), or the host port configured by `APP_PORT`.
+
+The MySQL schema is synchronized automatically when the app starts. Seed the sample portfolio data once:
+
+```bash
+docker compose exec app bun run db:seed
+```
+
+Stop the services without removing persistent data:
+
+```bash
+docker compose down
+```
+
+To remove the MySQL data as well, use `docker compose down -v`. This does not delete anything from hosted MinIO.
 
 ---
 
